@@ -1,4 +1,6 @@
 --!strict
+--!nolint LocalShadow
+
 local RunService = game:GetService("RunService")
 
 local Client = RunService:IsClient()
@@ -6,11 +8,16 @@ local Server = RunService:IsServer()
 
 local buffIdCounter = 0
 
-
 local BAC = {}
 BAC.__index = BAC
 
 local Signal = require("./addons/Signal/Signal")
+local Networker = require("./addons/Networker/Networker")
+
+Networker.init()
+
+local BuffEvent, DirectoryToBuff = Networker.Get("BuffEvent", "RemoteEvent")
+local BuffEventKey = DirectoryToBuff.BuffEvent.Keys
 
 function BAC.new(Player: Player)
     assert(
@@ -35,7 +42,7 @@ function BAC.new(Player: Player)
     return self
 end
 
-export type BuffActionController = typeof(BAC.new({UserId = 0} ::any))
+export type BuffActionController = typeof(BAC.new({UserId = "ccc"} ::any))
 type buffId = number
 type ConditionIds = string
 
@@ -63,6 +70,46 @@ end
 
 function BAC:RemoveBuff(BuffId:buffId)
     return nil
+end
+
+local function startListeningForBuffs()
+        local Events = {
+        [BuffEventKey.BuffApplied] = function()
+            
+        end,
+
+        [BuffEventKey.BuffExpired] = function()
+            
+        end
+    }
+
+    BuffEvent.Event.OnClientEvent:Connect(function(KEY:number, ...:any)
+        local Handle = Events[KEY]
+        if Handle then
+            Handle(...)
+        end
+    end)
+end
+
+if Client then
+    startListeningForBuffs()
+end
+
+-- Only call this when its definitively getting removed from memory, otherwise system will error
+function BAC:Destroy()
+    local self = self :: BuffActionController
+
+    pcall(function()
+        self.OnBuffApplied:Destroy()
+        self.OnBuffApplied = nil
+    end)
+
+    pcall(function()
+        self.OnBuffExpired:Destroy()
+        self.OnBuffExpired = nil
+    end)
+
+    table.clear(self :: any)
 end
 
 return BAC
