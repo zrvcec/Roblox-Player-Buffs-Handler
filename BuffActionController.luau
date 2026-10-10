@@ -1,11 +1,15 @@
+--!strict
+
 local BAC = {}
 BAC.__index = BAC
+
+local Signal = require("./addons/Signal/Signal")
 
 function BAC.new()
     local self = setmetatable({}, BAC)
     
-    self.OnBuffApplied = nil
-    self.OnBuffExpired = nil
+    self.OnBuffApplied = Signal.new()
+    self.OnBuffExpired = Signal.new()
 
     return self
 end

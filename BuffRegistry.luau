@@ -1,2 +1,4 @@
+--!strict
+
 -- Defines the BuffRegistry module which manages the registration and retrieval of buffs in the game. 
 -- This script allows for the addition of new buffs, checking for existing buffs, and retrieving buff data based on unique identifiers.
