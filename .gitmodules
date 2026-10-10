@@ -1,3 +1,6 @@
 [submodule "addons/Signal"]
 	path = addons/Signal
 	url = https://github.com/zrvcec/Signal.git
+[submodule "addons/Networker"]
+	path = addons/Networker
+	url = https://github.com/zrvcec/Networker.git
