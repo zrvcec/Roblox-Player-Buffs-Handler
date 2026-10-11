@@ -10,7 +10,9 @@ BuffCondition.data = {
         name = "Celestials Evaporator III",
         description = "Grants player outrageous buff stats. Use at your own risk",
 
-        effects = {}
+        effects = {
+            Stun = {value = 1}
+        }
     }
 }
 
