@@ -37,7 +37,7 @@ end
 
 -- 7. Restrict a value to a range.
 function Buffs.clamp(current: number, minValue: number, maxValue: number): number
-    if minValue <= maxValue then
+    if minValue > maxValue then
         return 0
     end
     return math.clamp(current, minValue, maxValue)
@@ -88,7 +88,7 @@ end
 
 -- 14. Diminishing returns.
 function Buffs.diminishingreturns(input: number, maxBonus: number, scalingConstant: number): number
-    if scalingConstant > 0 then
+    if scalingConstant <= 0 then
         return 0
     end
 
@@ -117,15 +117,9 @@ end
 
 -- 18. Chance-based effect.
 function Buffs.chancebased(chance: number): (boolean)
-    if chance >= 0 and chance <= 1 then
-        return false
-    end
-
-    if RandomGenerator:NextNumber() < chance then
-        return true
-    end
-
-    return false
+    if chance <= 0 then return false end
+    if chance >= 1 then return true end
+    return RandomGenerator:NextNumber() < chance
 end
 
 return Buffs

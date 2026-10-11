@@ -119,8 +119,20 @@ export type BuffType = "DamageIncrease"
     | "Ragdoll"
 | "KnockBack"
 
+--[[
+    DamageIncrease = {
+        name = "Damage Boost",
+        description = "Gives you a damage boost that are non physical",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        }
+    },
+]]
 
-function BAC:FindBuff(Buff:BuffType, safe:boolean?): any
+type databuffevent = {name:string, description:string, effect: {type: ()->(boolean | number)), value:number}}
+
+function BAC:FindBuff(Buff:BuffType, safe:boolean?): databuffevent
     local FoundBuffRegistry = BuffRegistry.Qualities[Buff]
     if not safe then
         assert(FoundBuffRegistry ~= nil, "BuffRegistry Does not exist for: ".. Buff)
@@ -128,13 +140,22 @@ function BAC:FindBuff(Buff:BuffType, safe:boolean?): any
     return FoundBuffRegistry
 end
 
-function BAC:compileresults(BuffType: BuffType, curr:number): number
+function BAC:compileresults(BuffType: BuffType, curr, ...:any): number | boolean
     local self = self :: BuffActionController
     local buff = self:FindBuff(BuffType)
     if not buff then
-        return curr    
+        return curr
     end
 
+    local effect = buff.effect
+    if not effect then
+        return curr
+    end
+
+    local handle = effect.type
+    if handle then
+        return handle(...)
+    end
     return curr
 end
 
@@ -175,7 +196,7 @@ function BAC:ApplyBuffs(Buffs: string, TimeLimit: number?): buffId?
 
     if TimeLimit then
         local TimeRightNow = workspace:GetServerTimeNow()
-        local Offset = TimeRightNow - TimeLimit
+        local Offset =  TimeLimit - TimeRightNow
         
         -- If bigger than 15 minutes. Consider it unlimited
         if Offset > 15*60 then
@@ -214,7 +235,7 @@ function BAC:RemoveBuff(Buff:string): boolean
         end
         self.ActiveBuffByBuff[Buff] = nil
     end
-    return false
+    return true
 end
 
 function BAC:HasBuff(Buff:string) 

@@ -18,7 +18,7 @@ local BuffRegistry = {
         basedonmissing = {id = 10, calc = BuffRegistryCalc.basedonmissing},
         additivestacking = {id = 11, calc = BuffRegistryCalc.additivestacking},
         multiplicativestacking = {id = 12, calc = BuffRegistryCalc.multiplicativestacking},
-        diminishingreturns = {id = 13, BuffRegistryCalc.diminishingreturns},
+        diminishingreturns = {id = 13, calc = BuffRegistryCalc.diminishingreturns},
         conditional = {id = 14, calc = BuffRegistryCalc.conditional},
         conversion = {id = 15, calc = BuffRegistryCalc.conversion},
         chancebased = {id = 16, calc = BuffRegistryCalc.chancebased},
@@ -51,8 +51,6 @@ local BuffRegistry = {
     | conversion               | sourceStat * conversionRate                  | 200 attack * 0.1 = 20 armor          |
     | chancebased              | Trigger if random roll < chance              | 0.25 = 25% chance                    |
     +-------------------------+----------------------------------------------+--------------------------------------+
-} 
-
 
 
 ]]
@@ -60,28 +58,109 @@ local Qualities = {
     -- Combat Qualities
 
     DamageIncrease = {
-        name = "",
-        description = "",
+        name = "Damage Boost",
+        description = "Gives you a damage boost that are non physical",
         effect = {
             type = BuffRegistry.types.MultiplierByOffset,
             value = 1,
         }
     },
 
-    PhysicalDamageIncrease = {},
-    IncomingDamageReduction = {},
-    AttackSpeed = {},
-    CriticalChance = {},
-    CriticalDamage = {},
-    Range = {},
+    PhysicalDamageIncrease = {
+        name = "Physical Damage Boost",
+        description = "Gives you a damage boost that are physical",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        }
+    },
 
+
+    IncomingDamageReduction = {
+        name = "Damage Dealt Protection",
+        description = "Reduces the amount of damage you deal against others",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        }
+    },
+
+    AttackSpeed ={
+        name = "Attack Speed Boost",
+        description = "Increases your attack speed",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        }
+    },
+
+    CriticalChance = {
+        name = "Critical Chance Boost",
+        description = "Increases your chances of a critical hit!",
+        effect = {
+            type = BuffRegistry.types.chancebased,
+            value = 1,
+        },
+    },
+    CriticalDamage = {
+        name = "Critical Damage Boost",
+        description = "Increases your Critical Damage!",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    },
+    Range = {
+        name = "Reach Increase",
+        description = "Increases your utensil tool ranges!",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    },
     -- Movement Qualities
     
-    MovementSpeed = {},
-    SprintSpeed = {},
-    DashDistance = {},
-    DashSpeed = {},
-    DashCooldown = {},
+    MovementSpeed =  {
+        name = "Movement Speed Boost",
+        description = "Increases your walkspeed!",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    },
+    SprintSpeed = {
+        name = "Movement Speed Boost",
+        description = "Increases your Runningspeed!",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    },
+
+    DashDistance = {
+        name = "Dash Distance",
+        description = "Increases your Dashing distances!",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    },
+    DashSpeed = {
+        name = "Dash Speed",
+        description = "Increases your Dashing speeds!",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    },
+    DashCooldown = {
+        name = "Dash Cooldown",
+        description = "Lowers your cooldown speeds!",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    },
 
     -- Health & Stamina Qualities
 
