@@ -2,11 +2,13 @@
 --!nolint LocalShadow
 
 local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
 
 local Client = RunService:IsClient()
 local Server = RunService:IsServer()
 
 local buffIdCounter = 0
+local ClientBAC: BuffActionController
 
 local BAC = {}
 BAC.__index = BAC
@@ -145,28 +147,7 @@ function BAC:GetCondition(Buff:ConditionIds, safe:boolean?): number?
 end
 
 
-local function startListeningForBuffs()
-        local Events = {
-        [BuffEventKey.BuffApplied] = function()
-            
-        end,
 
-        [BuffEventKey.BuffExpired] = function()
-            
-        end
-    }
-
-    BuffEvent.Event.OnClientEvent:Connect(function(KEY:number, ...:any)
-        local Handle = Events[KEY]
-        if Handle then
-            Handle(...)
-        end
-    end)
-end
-
-if Client then
-    startListeningForBuffs()
-end
 
 local function generateBuffId(): string
     buffIdCounter += 1
@@ -174,6 +155,7 @@ local function generateBuffId(): string
 end
 
 -- Timelimit in seconds and set to workspace:getservertime() + Given timelimit
+-- Buffs longer than 15 minutes are considered infinite with no TimeLimit (Leave nil for same result)
 function BAC:ApplyBuffs(Buffs: string, TimeLimit: number?): buffId?
     local self = self :: BuffActionController
     local buffId = generateBuffId()
@@ -192,21 +174,45 @@ function BAC:ApplyBuffs(Buffs: string, TimeLimit: number?): buffId?
     self.ActiveBuffByBuff[Buffs] = {Id = buffId, ExpiresAt = TimeLimit}
 
     if TimeLimit then
+        local TimeRightNow = workspace:GetServerTimeNow()
+        local Offset = TimeRightNow - TimeLimit
         
+        -- If bigger than 15 minutes. Consider it unlimited
+        if Offset > 15*60 then
+            return
+        end
+
+        task.delay(Offset, function()
+            local Player = self.Player
+            if not Player or not Player.Parent then
+                return
+            end
+
+            local _Buff = self.ActiveBuffByBuff[Buffs]
+            if not _Buff then
+                return
+            end
+
+            if _Buff.Id ~= buffId then
+                return
+            end
+
+            self:RemoveBuff(Buffs)
+        end)
     end
 
     return buffId
 end
 
-function BAC:RemoveBuff(BuffId:buffId): boolean
+function BAC:RemoveBuff(Buff:string): boolean
     local self = self :: BuffActionController
 
-    local buff_1 = self.ActiveBuffByBuff[BuffId]
+    local buff_1 = self.ActiveBuffByBuff[Buff]
     if buff_1 then
         if self.OnBuffExpired then
             self.OnBuffExpired:Fire()    
         end
-        self.ActiveBuffByBuff[BuffId] = nil
+        self.ActiveBuffByBuff[Buff] = nil
     end
     return false
 end
@@ -233,5 +239,39 @@ function BAC:Destroy()
         end)
     end
     table.clear(self :: any)
+end
+
+
+local function startListeningForBuffs()
+        local Player = Players.LocalPlayer or Players.PlayerAdded:Wait()
+        if Player ~= Players.LocalPlayer then
+            error("Player is not player.")
+        end
+
+        ClientBAC = BAC.new(Player)
+        if not ClientBAC then
+            error("ClientBAC missing")
+        end
+
+        local Events = {
+        [BuffEventKey.BuffApplied] = function(Buff)
+            ClientBAC:ApplyBuffs(Buff)
+        end,
+
+        [BuffEventKey.BuffExpired] = function(Buff)
+            ClientBAC:RemoveBuff(Buff)
+        end
+    }
+
+    BuffEvent.Event.OnClientEvent:Connect(function(KEY:number, ...:any)
+        local Handle = Events[KEY]
+        if Handle then
+            Handle(...)
+        end
+    end)
+end
+
+if Client then
+    startListeningForBuffs()
 end
 return BAC
