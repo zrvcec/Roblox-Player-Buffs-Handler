@@ -9,42 +9,84 @@ local BuffRegistry = {}
 -- GetBuffMultiplier applies the multiplier given by temporary buffs
 
 local Qualities = {
-    Walkspeed = {
-        GetBaseValue = function()
-            
-        end,
+    -- Combat Qualities
 
-        GetBuffMultiplier = function()
-            
-        end,
-    },
-    RunSpeed = {
-        GetBaseValue = function()
-            
-        end,
+    DamageIncrease = {},
+    PhysicalDamageIncrease = {},
+    IncomingDamageReduction = {},
+    AttackSpeed = {},
+    CriticalChance = {},
+    CriticalDamage = {},
+    Range = {},
 
-        GetBuffMultiplier = function()
-            
-        end,
-    },
-    Strength = {
-        GetBaseValue = function()
-            
-        end,
+    -- Movement Qualities
+    
+    MovementSpeed = {},
+    SprintSpeed = {},
+    DashDistance = {},
+    DashSpeed = {},
+    DashCooldown = {},
 
-        GetBuffMultiplier = function()
-            
-        end,
-    },
-    JumpPower = {
-        GetBaseValue = function()
-            
-        end,
+    -- Health & Stamina Qualities
 
-        GetBuffMultiplier = function()
-            
-        end,
-    },
+    HealthIncrease = {},
+    HealthRegen = {},
+    StaminaIncrease = {},
+    StaminaRegen = {},
+    StaminaCost = {},
+    StaminaRegenDelay = {},
+    CombatCooldownReduction = {},
+
+    -- Nen Qualities
+
+    NenDamageIncrease = {}, 
+    NenIncomingDamageReduction = {},
+    NenCost = {},
+    NenRegeneration = {},
+    NenXPBoost = {},
+
+    -- Defense Qualities 
+    DamageDecreasebyDefense = {}, --> Basically if player is blocking and damage is 100 then it will do 100 defense damage and damage decrease may lower it
+    DefenseCost = {}, --> How much defense is consumed when being used and not getting hit.
+    DefenseRegen = {},
+    DefenseRegenDelay = {},
+
+    -- Mining Qualities
+    MiningDamage = {},
+    MiningSpeed = {},
+    ResourceDropIncreaseChance = {},
+    StatXPBoost = {},
+
+    -- Resistance Qualities
+    StunResistance = {},
+    KnockBackResistance = {},
+    BleedResistance = {},
+    BurnResistance = {},
+    PoisonResistance = {},
+    FreezeResistance = {},
+    ShockResistance = {},
+    SlowResistance = {},
+    
+    -- Positive Performance Qualities
+    DamageImmunity = {},
+    StunImmunity = {},
+
+    -- Negative Performance Qualities
+    Stun = {},
+    StunDurationIncrease = {},
+    Slow = {},
+    Bleed = {},
+    Burn = {},
+    Poison = {},
+    Freeze = {},
+    Shock = {},
+    Blind = {},
+    Silence = {},
+    Weaken = {},
+    Vulnerability = {},
+    Root = {},
+    Ragdoll = {},
+    KnockBack = {},
 }
 
 local Buffs = {}

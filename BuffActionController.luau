@@ -14,6 +14,10 @@ BAC.__index = BAC
 local Signal = require("./addons/Signal/Signal")
 local Networker = require("./addons/Networker/Networker")
 
+local BuffConditions = require("././BuffCondition")
+local BuffRegistry = require("././BuffRegistry")
+
+
 Networker.init()
 
 local BuffEvent, DirectoryToBuff = Networker.Get("BuffEvent", "RemoteEvent")
@@ -46,14 +50,21 @@ export type BuffActionController = typeof(BAC.new({UserId = "ccc"} ::any))
 type buffId = number
 type ConditionIds = string
 
-function BAC:FindBuff(Buff:string): any
-
-    return nil
+function BAC:FindBuff(Buff:string, safe:boolean?): any
+    local FoundBuffRegistry = BuffRegistry.Qualities[Buff]
+    if not safe then
+        assert(FoundBuffRegistry ~= nil, "BuffRegistry Does not exist for: ".. Buff)
+    end
+    return FoundBuffRegistry
 end
 
-function BAC:GetCondition(Buff:ConditionIds): number?
 
-    return nil
+function BAC:GetCondition(Buff:ConditionIds, safe:boolean?): number?
+    local Condition = BuffConditions.data[Buff]
+    if not safe then
+        assert(Condition ~= nil, `Could not find buff related to: {Buff}`)    
+    end
+    return Condition
 end
 
 local function generateBuffId(): buffId
@@ -68,8 +79,8 @@ function BAC:ApplyBuffs(Buffs: {any}, TimeLimit: number?): buffId
     return buffId
 end
 
-function BAC:RemoveBuff(BuffId:buffId)
-    return nil
+function BAC:RemoveBuff(BuffId:buffId): boolean
+    return false
 end
 
 local function startListeningForBuffs()
@@ -98,17 +109,19 @@ end
 -- Only call this when its definitively getting removed from memory, otherwise system will error
 function BAC:Destroy()
     local self = self :: BuffActionController
+    if self.OnBuffApplied then
+        pcall(function()
+            self.OnBuffApplied:Destroy()
+             self.OnBuffApplied = nil
+      end)
+    end
 
-    pcall(function()
-        self.OnBuffApplied:Destroy()
-        self.OnBuffApplied = nil
-    end)
-
-    pcall(function()
-        self.OnBuffExpired:Destroy()
-        self.OnBuffExpired = nil
-    end)
-
+    if self.OnBuffExpired then
+        pcall(function()
+          self.OnBuffExpired:Destroy()
+          self.OnBuffExpired = nil
+        end)
+    end
     table.clear(self :: any)
 end
 
