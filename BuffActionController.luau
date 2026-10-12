@@ -54,6 +54,22 @@ function BAC.new(Player: Player)
         end)
     end
 
+    self.Compiled = {} :: {[BuffType]: number}
+    for name, value in pairs(BuffRegistry.Qualities) do
+        self.Compiled[name] = 1
+    end
+
+    -- EXTERNAL SERVICES
+    self.stun = nil
+    self.bleed = nil
+    self.burn = nil
+    self.Poison = nil
+    self.freeze = nil
+    self.blind = nil
+    self.root = nil
+    self.ragdoll = nil
+    self.knockback = nil
+
     return self
 end
 
@@ -61,7 +77,9 @@ export type BuffActionController = typeof(BAC.new({UserId = "ccc"} ::any))
 
 type buffId = string
 type ConditionIds = string
-export type BuffType = "DamageIncrease"
+
+export type BuffType =
+    | "DamageIncrease"
     | "PhysicalDamageIncrease"
     | "IncomingDamageReduction"
     | "AttackSpeed"
@@ -99,8 +117,6 @@ export type BuffType = "DamageIncrease"
     | "BurnResistance"
     | "PoisonResistance"
     | "FreezeResistance"
-    | "ShockResistance"
-    | "SlowResistance"
     | "DamageImmunity"
     | "StunImmunity"
     | "Stun"
@@ -110,14 +126,13 @@ export type BuffType = "DamageIncrease"
     | "Burn"
     | "Poison"
     | "Freeze"
-    | "Shock"
     | "Blind"
     | "Silence"
     | "Weaken"
     | "Vulnerability"
     | "Root"
     | "Ragdoll"
-| "KnockBack"
+| "KnockBack";
 
 --[[
     DamageIncrease = {
@@ -130,7 +145,8 @@ export type BuffType = "DamageIncrease"
     },
 ]]
 
-type databuffevent = {name:string, description:string, effect: {type: ()->(boolean | number)), value:number}}
+type fn = ()->(boolean | number)
+type databuffevent = {name:string, description:string, effect: {type:fn, overflow:fn, min:number?, max:number?, parser: ((...any)->())?, value:number}}
 
 function BAC:FindBuff(Buff:BuffType, safe:boolean?): databuffevent
     local FoundBuffRegistry = BuffRegistry.Qualities[Buff]
@@ -140,23 +156,11 @@ function BAC:FindBuff(Buff:BuffType, safe:boolean?): databuffevent
     return FoundBuffRegistry
 end
 
-function BAC:compileresults(BuffType: BuffType, curr, ...:any): number | boolean
-    local self = self :: BuffActionController
-    local buff = self:FindBuff(BuffType)
-    if not buff then
-        return curr
-    end
-
-    local effect = buff.effect
-    if not effect then
-        return curr
-    end
-
-    local handle = effect.type
-    if handle then
-        return handle(...)
-    end
-    return curr
+-- re thinking architecture
+function BAC:compileresults()
+end
+-- re thinking architecture
+function BAC:EitherApplyBuffOrFunction()
 end
 
 function BAC:GetCondition(Buff:ConditionIds, safe:boolean?): number?
@@ -186,10 +190,6 @@ function BAC:ApplyBuffs(Buffs: string, TimeLimit: number?): buffId?
 
     if self:HasBuff(Buffs) then
         return nil
-    end
-
-    if self.OnBuffApplied then
-        self.OnBuffApplied:Fire()
     end
 
     self.ActiveBuffByBuff[Buffs] = {Id = buffId, ExpiresAt = TimeLimit}
@@ -222,6 +222,11 @@ function BAC:ApplyBuffs(Buffs: string, TimeLimit: number?): buffId?
         end)
     end
 
+    self:compileresults()
+
+    if self.OnBuffApplied then
+        self.OnBuffApplied:Fire()
+    end
     return buffId
 end
 

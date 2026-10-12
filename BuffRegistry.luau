@@ -57,6 +57,9 @@ local BuffRegistry = {
 local Qualities = {
     -- Combat Qualities
 
+    -- For future me
+    -- Use overflow for min max calculations
+    -- Then add variables value min and value max
     DamageIncrease = {
         name = "Damage Boost",
         description = "Gives you a damage boost that are non physical",
@@ -164,44 +167,225 @@ local Qualities = {
 
     -- Health & Stamina Qualities
 
-    HealthIncrease = {},
-    HealthRegen = {},
-    StaminaIncrease = {},
-    StaminaRegen = {},
-    StaminaCost = {},
-    StaminaRegenDelay = {},
-    CombatCooldownReduction = {},
+    HealthIncrease = {
+        name = "Vitality Boost",
+        description = "Gives you more warmth.",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    },
+    HealthRegen = {
+        name = "Vitality Regeneration",
+        description = "Gives you more regen speed.",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    },
+    StaminaIncrease = {
+        name = "Stamina Boost",
+        description = "Gives you more stamina.",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    },
+    StaminaRegen = {
+        name = "Stamina Regeneration",
+        description = "Gives you stamina faster.",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    },
+    StaminaCost = {
+        name = "Stamina Concentration",
+        description = "You control your stamina use alot better making the costs of stamina less.",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    },
+    StaminaRegenDelay = {
+        name = "Stamina Regeneration Recovery",
+        description = "It takes less time to start recovering.",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    },
+    CombatCooldownReduction = {
+        name = "Combat Utility",
+        description = "You can use combat attacks a little bit faster.",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    },
 
     -- Nen Qualities
 
-    NenDamageIncrease = {}, 
-    NenIncomingDamageReduction = {},
-    NenCost = {},
-    NenRegeneration = {},
-    NenXPBoost = {},
+    NenDamageIncrease = {
+        name = "Nen Damage Boost",
+        description = "Your Nen attacks do slightly more damage.",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    },
+    NenIncomingDamageReduction = {
+        name = "Nen Damage Reduction",
+        description = "Incoming NEN attacks do slightly less damage.",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    },
+    NenCost = {
+        name = "Nen Concentration",
+        description = "You control your stamina use alot better making the costs of stamina less..",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    },
+
+    NenRegeneration = {
+        name = "Nen Regenaration Boost.",
+        description = "Your Nen regenerates a little bit faster.",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    },
+    NenXPBoost = {
+        name = "Nen XP Boost.",
+        description = "You receive Nen Experience a little quicker than others.",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    },
 
     -- Defense Qualities 
-    DamageDecreasebyDefense = {}, --> Basically if player is blocking and damage is 100 then it will do 100 defense damage and damage decrease may lower it
-    DefenseCost = {}, --> How much defense is consumed when being used and not getting hit.
-    DefenseRegen = {},
-    DefenseRegenDelay = {},
+    DamageDecreasebyDefense = {
+        name = "Damage Reduction By Defense.",
+        description = "Your damage to block conversion gets lowered a little.",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    }, --> Basically if player is blocking and damage is 100 then it will do 100 defense damage and damage decrease may lower it
+    DefenseCost = {
+        name = "Defense Concentration.",
+        description = "Your idle defense current draw draws a little less.",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    }, --> How much defense is consumed when being used and not getting hit.
+    DefenseRegen = {
+        name = "Defense Regenaration Boost.",
+        description = "Your defense regenerates a little bit faster.",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    },
+    DefenseRegenDelay = {
+        name = "Defense Recovery.",
+        description = "Your Defense Recovers a little bit faster.",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    },
 
     -- Mining Qualities
-    MiningDamage = {},
-    MiningSpeed = {},
-    ResourceDropIncreaseChance = {},
-    StatXPBoost = {},
+    MiningDamage = {
+        name = "Mining Strength.",
+        description = "Your pickaxe suddenly becomes a little bit more useful.",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    },
+    MiningSpeed = {
+        name = "Mining Speed.",
+        description = "Your can mine a little bit faster.",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    },
+    ResourceDropIncreaseChance = {
+        name = "Mining Luck.",
+        description = "Your chances of a higher quality material dropping is slightly higher.",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    },
+
+    StatXPBoost = {
+        name = "Generic XP Boost",
+        description = "You receive Generic Experience a little quicker than others.",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    },
 
     -- Resistance Qualities
-    StunResistance = {},
-    KnockBackResistance = {},
-    BleedResistance = {},
-    BurnResistance = {},
-    PoisonResistance = {},
-    FreezeResistance = {},
-    ShockResistance = {},
-    SlowResistance = {},
-    
+    StunResistance = {
+        name = "Stun Resistance",
+        description = "Your stun duration is a little bit less.",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    },
+    KnockBackResistance = {
+        name = "Knockback Resistance",
+        description = "You're suddenly better at dealing with knockback.",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    },
+    BleedResistance = {
+        name = "Bleed Resistance",
+        description = "You're suddenly better at dealing with bleeding.",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    },
+    BurnResistance = {
+        name = "Burn Resistance",
+        description = "You're suddenly better at dealing with burning!",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    },
+    PoisonResistance = {
+        name = "Poison Resistance",
+        description = "You're suddenly better at dealing with poison!",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    },
+    FreezeResistance = {
+        name = "Freeze Resistance",
+        description = "You're suddenly better at dealing with freezing!",
+        effect = {
+            type = BuffRegistry.types.MultiplierByOffset,
+            value = 1,
+        },
+    },
     -- Positive Performance Qualities
     DamageImmunity = {},
     StunImmunity = {},
@@ -209,16 +393,11 @@ local Qualities = {
     -- Negative Performance Qualities
     Stun = {},
     StunDurationIncrease = {},
-    Slow = {},
     Bleed = {},
     Burn = {},
     Poison = {},
     Freeze = {},
-    Shock = {},
     Blind = {},
-    Silence = {},
-    Weaken = {},
-    Vulnerability = {},
     Root = {},
     Ragdoll = {},
     KnockBack = {},

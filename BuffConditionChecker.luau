@@ -17,7 +17,6 @@ local function Dbhandle(...)
 end
 
 for i, v in pairs(BuffRegistry.Qualities) do
-    
 end
 
 for _, BuffHandler in pairs(BuffConditions.data) do
