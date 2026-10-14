@@ -17,6 +17,11 @@ local function Dbhandle(...)
 end
 
 for i, v in pairs(BuffRegistry.Qualities) do
+    if v.effect.overflow then 
+        if not v.effect.min or v.effect.max then
+            error(`Missing effect min max on {i} {v}`)
+        end
+    end
 end
 
 for _, BuffHandler in pairs(BuffConditions.data) do

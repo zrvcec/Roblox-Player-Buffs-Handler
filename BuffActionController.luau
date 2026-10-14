@@ -158,6 +158,33 @@ end
 
 -- re thinking architecture
 function BAC:compileresults()
+    local self = self :: BuffActionController
+
+    -- Reset all compiled values to their defaults.
+    for BuffType in pairs(BuffRegistry.Qualities) do
+        self.Compiled[BuffType] = 1
+    end
+
+    -- Aggregate all active buffs.
+    for BuffName in pairs(self.ActiveBuffByBuff) do
+        local Quality = BuffRegistry.Qualities[BuffName]
+
+        if not Quality then
+            continue
+        end
+
+        local Effect = Quality.effect
+        if not Effect then
+            continue
+        end
+        
+        if not self.Compiled[BuffName] then
+            continue
+        end
+
+        local CurrentValue = 1
+        
+    end
 end
 -- re thinking architecture
 function BAC:EitherApplyBuffOrFunction()
@@ -170,9 +197,6 @@ function BAC:GetCondition(Buff:ConditionIds, safe:boolean?): number?
     end
     return Condition
 end
-
-
-
 
 local function generateBuffId(): string
     buffIdCounter += 1
